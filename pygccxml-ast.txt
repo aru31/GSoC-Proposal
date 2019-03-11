@@ -1,0 +1,877 @@
+namespace_t: 'analog'
+
+    artificial: 'False' 
+    class_t: 'agc2_cc'  
+
+        location: [agc2_cc.h]:41
+        artificial: 'False' 
+        class type: 'class' 
+        size: 600           
+        align: 8            
+        base classes:       
+
+            class: '::gr::sync_block'
+
+                access type: 'public'
+
+                virtual inheritance: 'False'
+
+        public:             
+
+        constructor_t: 'agc2_cc'
+
+            location: [agc2_cc.h]:41
+            artificial: 'True'  
+            is extern: False
+            return type: None
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: not virtual
+
+            is const: False
+
+            is static: False
+
+            explicit: False
+
+            copy constructor: False
+
+        constructor_t: 'agc2_cc'
+
+            location: [agc2_cc.h]:41
+            artificial: 'True'  
+            is extern: False
+            return type: None
+            arguments type: ::gr::analog::agc2_cc const & arg0
+            calling convention: __thiscall__
+
+            virtual: not virtual
+
+            is const: False
+
+            is static: False
+
+            explicit: False
+
+            copy constructor: True
+
+        destructor_t: '~agc2_cc'
+
+            location: [agc2_cc.h]:41
+            artificial: 'True'  
+        member_function_t: 'attack_rate'
+
+            location: [agc2_cc.h]:58
+            artificial: 'False' 
+            mangled: _ZNK2gr6analog7agc2_cc11attack_rateEv
+            is extern: False
+            return type: float
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: 1
+
+            is static: False
+
+        member_function_t: 'decay_rate'
+
+            location: [agc2_cc.h]:59
+            artificial: 'False' 
+            mangled: _ZNK2gr6analog7agc2_cc10decay_rateEv
+            is extern: False
+            return type: float
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: 1
+
+            is static: False
+
+        member_function_t: 'gain'
+
+            location: [agc2_cc.h]:61
+            artificial: 'False' 
+            mangled: _ZNK2gr6analog7agc2_cc4gainEv
+            is extern: False
+            return type: float
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: 1
+
+            is static: False
+
+        member_function_t: 'make'
+
+            location: [agc2_cc.h]:55
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc4makeEffff
+            is extern: False
+            return type: ::gr::analog::agc2_cc::sptr
+            arguments type: float attack_rate, float decay_rate, float reference, float gain
+            calling convention: __<<<system default>>>__
+
+            virtual: not virtual
+
+            is const: False
+
+            is static: 1
+
+        member_function_t: 'max_gain'
+
+            location: [agc2_cc.h]:62
+            artificial: 'False' 
+            mangled: _ZNK2gr6analog7agc2_cc8max_gainEv
+            is extern: False
+            return type: float
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: 1
+
+            is static: False
+
+        member_function_t: 'reference'
+
+            location: [agc2_cc.h]:60
+            artificial: 'False' 
+            mangled: _ZNK2gr6analog7agc2_cc9referenceEv
+            is extern: False
+            return type: float
+            arguments type: 
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: 1
+
+            is static: False
+
+        member_function_t: 'set_attack_rate'
+
+            location: [agc2_cc.h]:64
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc15set_attack_rateEf
+            is extern: False
+            return type: void
+            arguments type: float rate
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: False
+
+            is static: False
+
+        member_function_t: 'set_decay_rate'
+
+            location: [agc2_cc.h]:65
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc14set_decay_rateEf
+            is extern: False
+            return type: void
+            arguments type: float rate
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: False
+
+            is static: False
+
+        member_function_t: 'set_gain'
+
+            location: [agc2_cc.h]:67
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc8set_gainEf
+            is extern: False
+            return type: void
+            arguments type: float gain
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: False
+
+            is static: False
+
+        member_function_t: 'set_max_gain'
+
+            location: [agc2_cc.h]:68
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc12set_max_gainEf
+            is extern: False
+            return type: void
+            arguments type: float max_gain
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: False
+
+            is static: False
+
+        member_function_t: 'set_reference'
+
+            location: [agc2_cc.h]:66
+            artificial: 'False' 
+            mangled: _ZN2gr6analog7agc2_cc13set_referenceEf
+            is extern: False
+            return type: void
+            arguments type: float reference
+            calling convention: __thiscall__
+
+            virtual: pure virtual
+
+            is const: False
+
+            is static: False
+
+        typedef_t: 'sptr'   
+
+            location: [agc2_cc.h]:45
+            artificial: 'False' 
+            alias to: ::boost::shared_ptr<gr::analog::agc2_cc>
+
+        protected:          
+
+        private:            
+
+    namespace_t: 'kernel'
+
+        artificial: 'False' 
+        class_t: 'agc2_cc'  
+
+            location: [/usr/include/gnuradio/analog/agc2.h]:41
+            artificial: 'False' 
+            class type: 'class' 
+            size: 20            
+            align: 4            
+            public:             
+
+            constructor_t: 'agc2_cc'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:41
+                artificial: 'True'  
+                is extern: False
+                return type: None
+                arguments type: ::gr::analog::kernel::agc2_cc const & arg0
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+                explicit: False
+
+                copy constructor: True
+
+            constructor_t: 'agc2_cc'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:53
+                artificial: 'False' 
+                is extern: False
+                return type: None
+                arguments type: float attack_rate, float decay_rate, float reference, float gain, float max_gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+                explicit: False
+
+                copy constructor: False
+
+            destructor_t: '~agc2_cc'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:41
+                artificial: 'True'  
+            member_function_t: 'attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:61
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_cc11attack_rateEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:60
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_cc10decay_rateEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:63
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_cc4gainEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:64
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_cc8max_gainEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:62
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_cc9referenceEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'scale'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:72
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc5scaleESt7complexIfE
+                is extern: False
+                return type: ::gr_complex
+                arguments type: ::gr_complex input
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'scaleN'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:95
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc6scaleNEPSt7complexIfEPKS4_j
+                is extern: False
+                return type: void
+                arguments type: ::gr_complex * output, ::gr_complex const * input, unsigned int n
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:67
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc15set_attack_rateEf
+                is extern: False
+                return type: void
+                arguments type: float rate
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:66
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc14set_decay_rateEf
+                is extern: False
+                return type: void
+                arguments type: float rate
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:69
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc8set_gainEf
+                is extern: False
+                return type: void
+                arguments type: float gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:70
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc12set_max_gainEf
+                is extern: False
+                return type: void
+                arguments type: float max_gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:68
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_cc13set_referenceEf
+                is extern: False
+                return type: void
+                arguments type: float reference
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_operator_t: 'operator='
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:41
+                artificial: 'True'  
+                mangled: _ZN2gr6analog6kernel7agc2_ccaSERKS2_
+                is extern: False
+                return type: ::gr::analog::kernel::agc2_cc &
+                arguments type: ::gr::analog::kernel::agc2_cc const & arg0
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            protected:          
+
+            variable_t: '_attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:102
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 0
+
+            variable_t: '_decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:103
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 4
+
+            variable_t: '_gain' 
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:105
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 12
+
+            variable_t: '_max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:106
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 16
+
+            variable_t: '_reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:104
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 8
+
+            private:            
+
+        class_t: 'agc2_ff'  
+
+            location: [/usr/include/gnuradio/analog/agc2.h]:110
+            artificial: 'False' 
+            class type: 'class' 
+            size: 20            
+            align: 4            
+            public:             
+
+            constructor_t: 'agc2_ff'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:110
+                artificial: 'True'  
+                is extern: False
+                return type: None
+                arguments type: ::gr::analog::kernel::agc2_ff const & arg0
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+                explicit: False
+
+                copy constructor: True
+
+            constructor_t: 'agc2_ff'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:122
+                artificial: 'False' 
+                is extern: False
+                return type: None
+                arguments type: float attack_rate, float decay_rate, float reference, float gain, float max_gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+                explicit: False
+
+                copy constructor: False
+
+            destructor_t: '~agc2_ff'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:110
+                artificial: 'True'  
+            member_function_t: 'attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:129
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_ff11attack_rateEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:130
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_ff10decay_rateEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:132
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_ff4gainEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:133
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_ff8max_gainEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:131
+                artificial: 'False' 
+                mangled: _ZNK2gr6analog6kernel7agc2_ff9referenceEv
+                is extern: False
+                return type: float
+                arguments type: 
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: 1
+
+                is static: False
+
+            member_function_t: 'scale'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:141
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff5scaleEf
+                is extern: False
+                return type: float
+                arguments type: float input
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'scaleN'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:162
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff6scaleNEPfPKfj
+                is extern: False
+                return type: void
+                arguments type: float * output, float const * input, unsigned int n
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:135
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff15set_attack_rateEf
+                is extern: False
+                return type: void
+                arguments type: float rate
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:136
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff14set_decay_rateEf
+                is extern: False
+                return type: void
+                arguments type: float rate
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:138
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff8set_gainEf
+                is extern: False
+                return type: void
+                arguments type: float gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:139
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff12set_max_gainEf
+                is extern: False
+                return type: void
+                arguments type: float max_gain
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_function_t: 'set_reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:137
+                artificial: 'False' 
+                mangled: _ZN2gr6analog6kernel7agc2_ff13set_referenceEf
+                is extern: False
+                return type: void
+                arguments type: float reference
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            member_operator_t: 'operator='
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:110
+                artificial: 'True'  
+                mangled: _ZN2gr6analog6kernel7agc2_ffaSERKS2_
+                is extern: False
+                return type: ::gr::analog::kernel::agc2_ff &
+                arguments type: ::gr::analog::kernel::agc2_ff const & arg0
+                calling convention: __thiscall__
+
+                virtual: not virtual
+
+                is const: False
+
+                is static: False
+
+            protected:          
+
+            variable_t: '_attack_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:169
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 0
+
+            variable_t: '_decay_rate'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:170
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 4
+
+            variable_t: '_gain' 
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:172
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 12
+
+            variable_t: '_max_gain'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:173
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 16
+
+            variable_t: '_reference'
+
+                location: [/usr/include/gnuradio/analog/agc2.h]:171
+                artificial: 'False' 
+                type: float
+                value: None
+                size: 4             
+                align: 4            
+                offset: 8
+
+            private:            
+
