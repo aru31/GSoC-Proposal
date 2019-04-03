@@ -15,6 +15,7 @@
 \usepackage{environ}
 \usepackage{tikz}
 \usepackage[hidelinks]{hyperref}
+
 \renewcommand\familydefault{\sfdefault}
 \usetikzlibrary{calc,matrix}
 
@@ -153,7 +154,7 @@ The best python based parsers currently available that are used to parse C++ cod
 \begin{enumerate}
 \item Implementation of both the parsers (libclang with python and pygccxml).
 \item Abstract the implementation details of parsers and create an abstract representation of the header files.
-\item Extend GRModtool CLI to provide support for the block header parser. Make GRModtool use this code itself instead of the built-in code.
+\item Extend GRModtool CLI to provide support for the block header parser. Make GRModtool use this code itself instead of the built-in code, write a python script to generate documentation of header files using Doxygen and integrate it in GRModtool.
 \item Parse the abstract representation, create YAML files for GRC, write a script to add or modify new optional YAML key parameters.
 \item Extend the utility of block header parsing tool to take a list of files or a directory and parse them and also extend it to parse different file types for example .cc files etc (if time permits).
 \end{enumerate}
@@ -162,9 +163,9 @@ The best python based parsers currently available that are used to parse C++ cod
 \label{sec:theory}
 Initially, I will be doing the groundwork by setting up the abstract implementation of the parser (pygccxml). Then comes parsing the abstract representation and storing information in a python dictionary. Next step will comprise of creating YAML files for the GRC and integrating the tool with GRModtool. The same procedure will be followed for libclang.
 \\ \\
-The working prototype of the entire project (using pygccxml parser only) is available \texttt{\href{https://github.com/aru31/parser-prototype}{here}}. The file \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/ast_generator.py}{ast\_generator.py}} implements the pygccxml parser to generate the abstract representation and the file \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/text_parser.py}{text\_parser.py}} parses the entire AST to get all the useful information. All the data that we get using the function in the latter file is then returned in a python dictionary and a YAML file is created in \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/yaml_generator.py}{yaml\_generator.py}} file. \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/pygccxml_ast.txt}{pygccxml\_ast.txt}} is the AST generated for \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/sample.h}{sample.h}} header file.
+The working prototype of the entire project (using pygccxml parser only) is available \texttt{\href{https://github.com/aru31/parser-prototype}{here}}[1]. The file \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/ast_generator.py}{ast\_generator.py}}[2] implements the pygccxml parser to generate the abstract representation and the file \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/text_parser.py}{text\_parser.py}}[3] parses the entire AST to get all the useful information. All the data that we get using the function in the latter file is then returned in a python dictionary and a YAML file is created in \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/yaml_generator.py}{yaml\_generator.py}}[4] file. \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/pygccxml_ast.txt}{pygccxml\_ast.txt}}[5] is the AST generated for \texttt{\href{https://github.com/aru31/parser-prototype/blob/master/sample.h}{sample.h}}[6] header file.
 \subsection{Implementation of parsing tools}
-GNU Radio API (headers) requires C++ for compiling, not straight C, which requires us to use a parser to parse C++. Libclang (python-based) and pygccxml both do an excellent job for this purpose and are especially good for GNU Radio header files because of their brilliant and elegant yet simple and most importantly their generic structure.
+GNU Radio API (headers) requires C++ for compiling, not straight C, so we need a parser that does a good job in analysing C++ code. Libclang (python-based) and pygccxml both do an excellent work for this purpose and are especially good for GNU Radio header files because of their brilliant and elegant yet simple and most importantly their generic structure.
 \\
 But there is a trade-off in their utility. Here are a few points of comparison in both the parsers:-
 \begin{itemize}
@@ -194,7 +195,6 @@ def pygccxml_parser(filename, gr_directory):
     xml_generator_config = parser.xml_generator_configuration_t(
         xml_generator_path=generator_path,
         xml_generator=generator_name)
-    filename = filename
 
     # Parse the c++ file
     decls = parser.parse([filename], xml_generator_config)
@@ -203,7 +203,8 @@ def pygccxml_parser(filename, gr_directory):
     global_namespace = declarations.get_global_namespace(decls)
     ns = global_namespace.namespace("gr")
     gr_block_type = gr_directory.split("-")[1]
-    gr_namespace = global_namespace.namespace(gr_block_type)
+    gr_namespace = ns.namespace(gr_block_type)
+    return declarations.print_declarations(gr_namespace)
 \end{lstlisting}
 \subsubsection{Implementation of Libclang with python}
 Libclang is a python package used for analyzing C/C++/ObjC code at the compiler level which means it can also be used to analyze all the standard C++ libraries too. Libclang with python bindings provide us a pythonic way of implementing classes and functions to parse C++ files. It is also compatible with Python2.7, 3.4, 3.5, pypy and pypy3.
@@ -215,14 +216,14 @@ from clang.cindex import Index
 from pprint import pprint
 
 
-def get_cursor_id(cursor, cursor_list = []):
+def get_cursor_id(cursor, cursor_list=[]):
     """
     Cursor point to the current node
     """
     if cursor is None:
         return None
 
-    for i,c in enumerate(cursor_list):
+    for i, c in enumerate(cursor_list):
         if cursor == c:
             return i
     cursor_list.append(cursor)
@@ -234,16 +235,16 @@ def get_info(node, depth=0):
     """
     children = [get_info(c, depth+1)
                 for c in node.get_children()]
-    return { 'id' : get_cursor_id(node),
-             'kind' : node.kind,
-             'usr' : node.get_usr(),
-             'spelling' : node.spelling,
-             'location' : node.location,
-             'extent.start' : node.extent.start,
-             'extent.end' : node.extent.end,
-             'is_definition' : node.is_definition(),
-             'definition id' : get_cursor_id(node.get_definition()),
-             'children' : children }
+    return {'id': get_cursor_id(node),
+            'kind': node.kind,
+            'usr': node.get_usr(),
+            'spelling': node.spelling,
+            'location': node.location,
+            'extent.start': node.extent.start,
+            'extent.end': node.extent.end,
+            'is_definition': node.is_definition(),
+            'definition id': get_cursor_id(node.get_definition()),
+            'children': children}
 
 
 index = Index.create()
@@ -295,15 +296,15 @@ def InitailParserInput():
  \\ \\
  Example AST generated by both the parsers for a GNU Radio header file \\ (agc2\_cc\_impl.h) are:
  \begin{itemize}
-\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/clang-ast.txt}{Clang-generated-AST}
-\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/pygccxml-ast.txt}{Pygccxml-generated-AST}
+\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/clang-ast.txt}{Clang-generated-AST} [7]
+\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/pygccxml-ast.txt}{Pygccxml-generated-AST} [8]
  \end{itemize}
 \subsection{Extend GRModtool CLI to provide support for this tool}
 GRModtool is a script in GNU Radio that provides a CLI for creating OOT modules. It provides various features, for example creating new OOT modules, editing makefiles, using templates, generating YAML files and much more.
 \\
 Block header parsing tool also being a command line utility can easily be integrated with GRModtool.
 \\
-Another GRModtool command can be called from CLI, for example from \texttt{gr\_modtool parse} for this purpose.
+Another GRModtool command can be called from CLI, for example \texttt{gr\_modtool parse} for this purpose.
 \\
 I have already gone through the code of GRModtool, which is brilliantly written and it will be really easy to work with.
 \begin{itemize}
@@ -312,7 +313,7 @@ I have already gone through the code of GRModtool, which is brilliantly written 
 \end{itemize}
 GRModtool already consists a parser written in \texttt{parser\_cc\_block.py} file to parse C++ files. It is although written elegantly but the code is limited only to parse GNU Radio cc files and if thought to be extended further as a generic API, it cannot be done because of the code structure which is written by analyzing the code pattern limited to GNU Radio headers, whereas for generic parsing (parsing every C++ file in a similar way), so that tool can be used as an API external to GNU Radio, both the python packages (pygccxml and libclang) do a great job.
 \\ \\
-Manual syntax check as shown below (code snippet from \texttt{parser\_cc\_block.py}) is no longer required as earlier done while parsing C++ files because both parsers throw compiler exceptions in case of syntax error (if any).
+Manual syntax check (snippet from \texttt{parser\_cc\_block.py}) is no longer required as earlier done while parsing C++ files because both parsers throw compiler exceptions in case of syntax error (if any). Code shown below is no longer required.
 \begin{lstlisting}
 while not end_of_list:
     # Keep track of (), stop when reaching final closing parens
@@ -326,7 +327,7 @@ while not end_of_list:
                         (str(param_list))
                     )
 \end{lstlisting}
-This code is no longer required to be implemented for parenthesis check of every function defined.
+Generating documantation for the header code is also quite necessary. So, Doxygen will be used for this purpose. Doxygen being a command line utility can easily used through a python script and then integrated in GRModtool. Another GRModtool command can be called from the CLI, \texttt{gr\_modtool document} for this purpose.
 \subsection{Parse the abstract representation, Create YAML files for GRC}
 After generating the AST (abstract representation of the block header), it needs to be parsed to get all the useful information from it. Because of the use of two different parsers in this project, they generate AST in a different format, thus different parsing strategies need to be implemented for both of them.
 \subsubsection{Parsing pygccxml generated AST}
@@ -392,7 +393,7 @@ Raising proper exceptions is also necessary because the header file should be de
 Once the data is parsed, store it in a python dict, create YAML files as per the layout of standard YAML files in GNU Radio.
 \\
 GRModtool already consists of a YAML\_generator used for the purpose of generating YAML files for the GRC. It has been implemented using Ordered Dictionary in python which is brilliant because key order definitely matters for YAML files. The code from YAML\_generator in GRModtool can be extended reused and extended for this purpose. Other advantage is that this would allow us to create generic YAML structure for the GRC. 
-\\ \\
+\\
 YAML file architecture in GNU Radio consists of these following keys:
 \begin{itemize}
 \item id, label, category, flags, parameters, inputs, outputs, templates, file\_format.
@@ -416,7 +417,7 @@ def file_name_parsing(file_name):
     data = {}
     data['id'] = file_name.split(".")[0].lower()
     data['label'] = (' '.join(label_part)).title()
-    data['flags'] = ['python'] # optional cpp templates
+    data['flags'] = ['python']  # optional cpp templates
     data['file_format'] = 1
     return data
 \end{lstlisting}
@@ -447,7 +448,7 @@ May 27 - June 3 & Initialize the implementation of pygccxml to generate AST, abs
 June 3 - June 10 & Start working on parsing pyggcxml generated AST.\endlr
 June 10 - June 17 &  Complete the implementation on parsing AST generated by pygccxml with thorough testing.\endlr
 June 17 - June 24 & Extend the script in GRModtool to generate YAML files for GRC or if required write a new script for this purpose raising proper exceptions. \endlr
-June 24 - July 1 & Submit the code for Phase 1 evaluation and write a script to edit the optional YAML keys. \endlr
+June 24 - July 1 & Submit the code for Phase 1 evaluation and write a script to edit the optional YAML keys, write a script to generate documentation of the header code and use it as one of GRModtool commands. \endlr
 July 1 - July 8 & Integrate the new tool with GRModtool so that it could be used as one of the utility of GRModtool.  \endlr
 July 8 - July 15 & Complete the parsing tool that runs along with GRModtool as its utility, initialize the implementation of libclang to generate AST. \endlr
 July 15 - July 22 & Start working on parsing liblclang generated AST. \endlr
@@ -464,14 +465,14 @@ The deliverables of the GSoC project are as follows:
 \begin{itemize}
 \item Implement abstract parsers compatible with python 3.
 \item Properly parsing the generated AST and creating YAML files from command line itself for GRC.
-\item Extend Command Line Interface of GRModtool to support the new tool that would abstract the use of parsers.
+\item Extend Command Line Interface of GRModtool to support the new tool that would abstract the use of parsers, also generate documentation for the header files and then integrate it with GRModtool as one of its commands.
 \item Implement the complete tool with thorough testing.
 \end{itemize}
 
 \subsection{Milestones}
 \begin{itemize}
 \item Phase-1: Successfully parsing AST generated by pygccxml.
-\item Phase-2: Extend the support of GRModtool with the parsing tool and complete the first parser with thorough testing, complete parsing AST with libclang. 
+\item Phase-2: Extend the support of GRModtool with the parsing tool and complete the first parser with thorough testing, complete parsing AST with libclang, generate documentation for header files using Doxygen.
 \item Final Evaluation: Completion of the block header parsing tool using both parsers (pygccxml and libclang), successfully creating YAML files for the GRC, making the tool functional as a generic API so that it would be easy to work on this tool further, and could be used for other purposes.
 \end{itemize}
 
@@ -479,7 +480,7 @@ The deliverables of the GSoC project are as follows:
 The code can be reviewed as per the proposed timeline whereas it can be merged according to the timeline stated below:
 \begin{itemize}
 \item June 24: Merge code for parsing AST generated by pygccxml.
-\item July 22: Merge code for complete parsing tool (Using pygccxml) integrated with GRModtool, and parsing AST with libclang.
+\item July 22: Merge code for complete parsing tool (Using pygccxml), documentation generator for header files, all integrated with GRModtool, and parsing AST with libclang.
 \item August 19: Merge the entire block header parsing tool along with it's extended utilities (if possible).
 \end{itemize}
 
@@ -517,7 +518,9 @@ I started off with GNU Radio in January 2019. To get familiarized with the code,
 \item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2412}{\#2412}: GRC: Fix for GRC crash in case of flowgraph error
 \item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2418}{\#2418}: gr\_modtool: fix for .yml file make template
 \item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2423}{\#2423}: gr\_modtool: fix for yaml generator
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2431}{\#2431}: modtool: fix modtool tests for missing pylint dependency
 \end{enumerate}
+\\
 I will always be available on email or Google Hangouts for any kind of discussion or query.
 \\
 I am highly interested to contribute to GNU Radio after the GSoC period. After the period, I'll mainly focus on extending the utility of this tool to different types of files, with the tool deciding how to manage each data file type by its own. I'll always be available for fixing the bugs that come up in the block header file tool. 
@@ -535,5 +538,17 @@ Here is the \href{https://aru31.github.io/resume.pdf}{link} to my CV.
 
 \section{Conclusion}
 Block header parsing tool would be a great addition to the set of tools for GNU Radio that works independently of the whole code. Since, block headers are the most direct source of information of GNU Radio blocks, parsing them directly from the source code itself would be of great utility.
+
+\section{Links}
+\begin{enumerate}
+\item \href{https://github.com/aru31/parser-prototype}{https://github.com/aru31/parser-prototype}
+\item \href{https://github.com/aru31/parser-prototype/blob/master/ast_generator.py}{https://github.com/aru31/parser-prototype/blob/master/ast\_generator.py}
+\item \href{https://github.com/aru31/parser-prototype/blob/master/text_parser.py}{https://github.com/aru31/parser-prototype/blob/master/text\_parser.py}
+\item \href{https://github.com/aru31/parser-prototype/blob/master/yaml_generator.py}{https://github.com/aru31/parser-prototype/blob/master/yaml\_generator.py}
+\item \href{https://github.com/aru31/parser-prototype/blob/master/pygccxml_ast.txt}{https://github.com/aru31/parser-prototype/blob/master/pygccxml\_ast.txt}
+\item \href{https://github.com/aru31/parser-prototype/blob/master/sample.h}{https://github.com/aru31/parser-prototype/blob/master/sample.h}
+\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/clang-ast.txt}{https://github.com/aru31/GSoC-Proposal/blob/master/AST/clang-ast.txt}
+\item \href{https://github.com/aru31/GSoC-Proposal/blob/master/AST/pygccxml-ast.txt}{https://github.com/aru31/GSoC-Proposal/blob/master/AST/pygccxml-ast.txt}
+\end{enumerate}
 
 \end{document}
