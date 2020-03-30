@@ -183,7 +183,7 @@ The security problem we need to solve is that no code should execute just becaus
 
 \subsection{Primary features of the project}
 \begin{enumerate}
-\item Implementation of persistent cache (in JSON format) to store the evaluated parameters in the same .grc file.
+\item Implementation of persistent cache (YAML key value pair, with the value in JSON format) to store the evaluated parameters in the same .grc file.
 \item Make use of the audit API in newer python version to warn/confirm file/network operations.
 \item Add some UID to flowgraph files, so that the view-only mode can be auto-enabled/disabled.
 \item Limit the eval time (Future Prospect).
@@ -292,6 +292,8 @@ def audit_hook(event, args):
 sys.addaudithook(audit_hook)
 \end{lstlisting}
 This would print out any system or network calls which otherwise would be difficult to catch.
+\\
+Note: This feature would only be enabled if the python version being used supports it so that it doesn't has to be a necessity to bump python version everywhere.
 
 \subsection{Identifying the foreign grc files}
 We have discussed almost all the possible scenarios to tackle with foreign grc files, but we still need to figure out which of the files are to be shown view only in the GNU Radio Companion and which of them can be directly edited.
@@ -324,45 +326,45 @@ The expected timeline for my project is given below:
  row sep=6ex, 
  use timeline header,
  timeline title={Timeline of the project}]
-April 27 - May 18 & Define the minute details of the project along with the community bonding period.\endlr
-May 18 - May 25 & Go through the GRC project, understand the use of the eval functions.\endlr
-May 25 - June 1 & Initialize the implementation of persistent cache in the grc file, abstract its implementation, define all the helper functions required.\endlr
-June 1 - June 8 & Integrate the use of the persistent cache with the eval operations.\endlr
-June 8 - June 15 & Integrate the use of the persistent cache with the eval operations.\endlr
-June 15 - June 22 & Submit the code for Phase 1 evaluation and almost finish with the implementation of the cache. \endlr
-June 22 - June 29 & Design and implement a view only mode to safely view the block parameters.  \endlr
-June 29 - July 6 & Understand the requirement to add audit hooks for various evals and start implementing them.  \endlr
-July 6 - July 13 & Complete the addition of audit API, add logging to unauthorized network calls in eval. \endlr
-July 13 - July 20 & Submit the code for Phase 2 evaluation and implement a solution to identify foreign flowgraphs. \endlr
-July 20 - July 27 & Start working on the identification of foreign flowgraph file part. \endlr
-July 27 - Aug 3 & Ensure a smooth working of the complete project, proper functioning of enabling/disabling view only GRC mode.\endlr
-Aug 3 - Aug 10 & Thoroughly test the view only mode, buffer time for completing the remaining tasks and start working on the extended part (or if found out later). \endlr
-Aug 10 - Aug 17 & Complete the project and submit the final report. \endlr
+May 4 - June 1 & Define the minute details of the project along with the community bonding period.\endlr
+June 1 - June 8 & Go through the GRC project, understand the use of the eval functions.\endlr
+June 8 - June 15 & Design and implement a view only mode to safely view the block parameters.  \endlr
+June 15 - June 22 & Initialize the implementation of persistent cache in the grc file, abstract its implementation, define all the helper functions required.\endlr
+June 22 - June 29 & Integrate the use of the persistent cache with the eval operations.\endlr
+June 29 - July 6 & Integrate the use of the persistent cache with the eval operations.\endlr
+July 6 - July 13 & Submit the code for Phase 1 evaluation and almost finish with the implementation of the cache. \endlr
+July 13 - July 20 & Understand the requirement to add audit hooks for various evals and start implementing them.  \endlr
+July 20 - July 27 & Complete the addition of audit API, add logging to unauthorized network calls in eval. \endlr
+July 27 - Aug 3 & Submit the code for Phase 2 evaluation and implement a solution to identify foreign flowgraphs. \endlr
+Aug 3 - Aug 10 & Start working on the identification of foreign flowgraph file part. \endlr
+Aug 10 - Aug 17 & Ensure a smooth working of the complete project, proper functioning of enabling/disabling view only GRC mode.\endlr
+Aug 17 - Aug 24 & Thoroughly test the view only mode, buffer time for completing the remaining tasks and start working on the extended part (or if found out later). \endlr
+Aug 24 - Aug 31 & Complete the project and submit the final report. \endlr
 \end{vtimeline}
 \pagebreak
 
 \section{Deliverables of GSoC 2020}
 The deliverables of the GSoC project are as follows:
 \begin{itemize}
-\item Implement the persistent cache to store all the eval operations.
 \item Design and implement a view only grc mode to safely view flowgraphs.
+\item Implement the persistent cache to store all the eval operations.
 \item Add audit API to monitor any unknown network or os operations, also add a way to identify the foriegn grc files.
 \item Implement the complete project with thorough testing.
 \end{itemize}
 
 \subsection{Milestones}
 \begin{itemize}
-\item Phase-1: Implement  the persistent cache, along with integrating it with the eval operations.
-\item Phase-2: Design a complete view only mode for the block parameters, implement it, add audit hooks to listen for various network or os operations.
-\item Final Evaluation: Completion of the view only mode, add a way to identify foreign grc files from the trusted ones, thoroughly test the project too.
+\item Phase-1: Design a complete view only mode for the block parameters, implement it.
+\item Phase-2: Implement  the persistent cache, along with integrating it with the eval operations.
+\item Final Evaluation: Add audit hooks to listen for various network or os operations. Completion of the view only mode, add a way to identify foreign grc files from the trusted ones, thoroughly test the project too.
 \end{itemize}
 
 \subsection{Review/Merge Cycle}
 The code can be reviewed as per the proposed timeline whereas it can be merged according to the timeline stated below:
 \begin{itemize}
-\item June 15: Merge code for persistent cache.
-\item July 13: Merge code for the view only for grc files integrated completely with eval functions in the GNU Radio Companion.
-\item August 10: Merge the entire project along with the audit hooks and extended work (if possible).
+\item June 29: Merge code for the view only mode for the grc files.
+\item July 27: Merge code for persistent cache integrated completely with all the eval functions in the GNU Radio Companion.
+\item August 24: Merge the entire project along with the audit hooks and extended work (if possible).
 \end{itemize}
 
 \subsection{Testing}

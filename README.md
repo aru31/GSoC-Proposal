@@ -10,4 +10,4 @@ Link for the 2019 proposal is: https://aru31.github.io/gsoc-proposal.pdf.
 Link for the 2020 proposal is: https://aru31.github.io/gsoc-proposal20.pdf.
 <br>
 
-Accepted into Google Summer of Code 2019!
+Accepted into Google Summer of Code 2019, 2020!
